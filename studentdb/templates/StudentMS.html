@@ -1,0 +1,27 @@
+<!-- student_management.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Registration</title>
+    <style ></style>
+</head>
+<body>
+    <button type="submit">Search Student</button>
+    <input type="text" name="name" placeholder="Enter student name">    
+
+    <h1>Register a new student</h1>
+    
+    <form method="post">
+        {% csrf_token %}
+        
+        <h2>Student Registration</h2>
+        {{ student_form.as_p }}  <!-- Renders the student registration form -->
+
+        <h2>Instructor Registration</h2>
+        {{ instructor_form.as_p }}  <!-- Renders the instructor registration form -->
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
