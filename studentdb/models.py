@@ -52,6 +52,7 @@ class Instructor(models.Model):
 
 
 class Course(models.Model):
+    
     course_id = models.AutoField(primary_key=True)
     course_name = models.CharField(max_length=200)
     course_description = models.CharField(max_length=500)
