@@ -1,5 +1,5 @@
 from django import forms
-from .models import Student, Instructor
+from .models import Student, Instructor, Department
 
 #views for student registration
 class StudentRegistrationForm(forms.ModelForm):
@@ -15,7 +15,8 @@ class StudentRegistrationForm(forms.ModelForm):
             'city': 'City',
             'state': 'State',
             'date_of_birth': 'Date of Birth',
-            'gender': 'Gender'
+            'gender': 'Gender',
+            'student_department': 'Student Department'
         }
         error_messages = {
             'first_name': {
@@ -55,6 +56,16 @@ class StudentRegistrationForm(forms.ModelForm):
         if Student.objects.filter(email=email).exists():
             raise forms.ValidationError("A student with this email already exists.")
         return email
+    
+    def clean_student_department(self):
+        department = self.cleaned_data.get('student_department')
+
+        if not Department.objects.filter(pk=department.pk).exists():
+            raise forms.ValidationError("The selected department is invalid.")
+
+        # if department.department_name not in ['COMP', 'BNS']:
+        #     raise forms.ValidationError("Only Computer Science and Business departments are allowed.")
+        return department
 
 class InstructorRegistrationForm(forms.ModelForm):
     class Meta:

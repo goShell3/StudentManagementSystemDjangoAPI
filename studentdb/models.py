@@ -23,7 +23,7 @@ class Student(models.Model):
         ('F', 'Female'),
     ]
     
-    student_id = models.AutoField(primary_key=True)
+    student_id = models.AutoField(primary_key=True, unique=True)
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=200)
     email = models.EmailField(max_length=200, unique=True)
@@ -31,7 +31,7 @@ class Student(models.Model):
     address = models.TextField()
     city = models.CharField(max_length=200)
     state = models.CharField(max_length=200)
-    date_of_birth = models.DateField()
+    date_of_birth = models.DateField( )
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
     student_department = models.ForeignKey(Department, on_delete=models.CASCADE, related_name='students')
 
