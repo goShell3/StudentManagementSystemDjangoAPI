@@ -2,7 +2,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.csrf import csrf_protect
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
-from django.shortcuts import render
 from .forms import StudentRegistrationForm, InstructorRegistrationForm
 from .models import Student, Instructor, Department
 # from django.views.generic import DetailView
@@ -17,7 +16,6 @@ from .models import Student, Instructor, Department
 @csrf_protect
 def student_form_list(request):
     if request.method == 'POST':
-        # Handle form submission
         student_form = StudentRegistrationForm(request.POST)
         if student_form.is_valid():
             student_form_instance = student_form.save()
@@ -47,7 +45,6 @@ def student_form_list(request):
             return JsonResponse(data, status=400)
 
     elif request.method == 'GET':
-        # Return an empty form structure for `GET` requests
         form_fields = {
             'first_name': 'string',
             'last_name': 'string',
@@ -68,7 +65,6 @@ def student_form_list(request):
         return JsonResponse(data, status=200)
 
     else:
-        # If the request is neither GET nor POST, return an error
         return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
           
 def StudentEditView(request, pk):
@@ -106,6 +102,18 @@ def listStudents(request):
         students = Student.objects.all().values('student_id', 'first_name', 'last_name', 'student_department')
         return JsonResponse(list(students), safe=False)
 
+#List all Instructor 
+def ListInstructor(request):
+    if request.method == "GET":
+        instructor = Instructor.objects.all().value('instructor_id', 'instructor_first_name', 'instructor_last_name', 'instructor_email', 'instructor_phone', 'instructor_department')
+        return JsonResponse(list(instructor), safe=False)  
+
+#GET instructors list based on cousses
+def InstructorCourseList(request, pk):
+    if request.method == "GET":
+        instructor_instance = Instructor.objects.filter(instructor_department_id=pk).values("instructor_first_name", "instructor_last_name", "instructor_department")
+        return JsonResponse(list(instructor_instance), safe=False)        
+
 #form handler for instructor 
 @csrf_protect
 def instructor_form_list(request):
@@ -137,23 +145,9 @@ def instructor_form_list(request):
             return JsonResponse(data, status=400)
     else:
         return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
-        
-
-def student_search_byname(request):
+         
+# GET all the list of department
+def ListDepartment(request, pk):
     if request.method == "GET":
-        student_name = request.GET.get('name') 
-        students = Student.objects.filter(name__icontains=student_name)  
-        return render(request, 'StudentMS.html', {'students': students})
-    return render(request, 'studentMS.html')
-
-def department_instructor(request):
-    if request.method == "GET":
-        department_name = request.GET.get('department')  # Get the department from the query
-        students = Student.objects.filter(department_name__icontains=department_name)  # Filter students by department
-        
-        instructors = Instructor.objects.filter(department_name__icontains=department_name).prefetch_related('students')  # Join instructors with their students
-        
-        return render(request, 'student_search.html', {'students': students, 'instructors': instructors})  # Render both students and instructors
-
-
-# views 
+        department = Department.objects.filter(department_id=pk).value("departement_id", "department_name", "department_description" )
+        return JsonResponse(list(department), safe=False)

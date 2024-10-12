@@ -52,12 +52,12 @@ class Instructor(models.Model):
 
 
 class Course(models.Model):
-    
+
     course_id = models.AutoField(primary_key=True)
     course_name = models.CharField(max_length=200)
     course_description = models.CharField(max_length=500)
     course_credit = models.IntegerField()
-    course_department = models.ForeignKey(Department, on_delete=models.CASCADE, related_name='courses')
+    department = models.ForeignKey(Department, on_delete=models.CASCADE, related_name='courses')
     instructors = models.ManyToManyField(Instructor, related_name='courses')
 
     def __str__(self):
@@ -65,6 +65,7 @@ class Course(models.Model):
 
 
 class Enrollment(models.Model):
+
     enrollment_id = models.AutoField(primary_key=True)
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='enrollments')
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='enrollments')
