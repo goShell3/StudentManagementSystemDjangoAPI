@@ -69,7 +69,7 @@ class Enrollment(models.Model):
     enrollment_id = models.AutoField(primary_key=True)
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='enrollments')
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='enrollments')
-    enrollment_date = models.DateField()
+    enrollment_date = models.DateField(auto_now_add=True)
     grade = models.CharField(max_length=2, null=True, blank=True)
 
     def __str__(self):

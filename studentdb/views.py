@@ -7,11 +7,6 @@ from .models import Student, Instructor, Department
 # from django.views.generic import DetailView
 
 
-
-# def department_views(request):
-#     if request.method == "GET":
-#         department_list = Department(request.GET)
-
 # sends a form data to the database  #add student 
 @csrf_protect
 def student_form_list(request):
@@ -87,14 +82,14 @@ def StudentEditView(request, pk):
     else:
         return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
 
-@csrf_exempt     
+@csrf_exempt          
 def StudentDeleteView(request, pk):
-    if request.method == "PUT":
-        student = get_object_or_404(Student, pk=pk)
+    if request.method == "DELETE":
+        student = get_object_or_404(Student, student_id=pk)
         student.delete()
         return JsonResponse({'status': 'success', 'message': 'Student deleted successfully'}, status=200)
+    
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
-
 
 #List the list of student 
 def listStudents(request):
@@ -146,8 +141,10 @@ def instructor_form_list(request):
     else:
         return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
          
-# GET all the list of department
+# GET all the list of department by primary key
 def ListDepartment(request, pk):
     if request.method == "GET":
         department = Department.objects.filter(department_id=pk).value("departement_id", "department_name", "department_description" )
         return JsonResponse(list(department), safe=False)
+    else:
+        return JsonResponse({'status':'error', 'message':'Invalid request method'}, status=405)
