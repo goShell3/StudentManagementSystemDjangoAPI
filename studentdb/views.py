@@ -82,14 +82,19 @@ def StudentEditView(request, pk):
     else:
         return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
 
-@csrf_exempt          
+@csrf_exempt
 def StudentDeleteView(request, pk):
     if request.method == "DELETE":
-        student = get_object_or_404(Student, student_id=pk)
-        student.delete()
-        return JsonResponse({'status': 'success', 'message': 'Student deleted successfully'}, status=200)
-    
+        try:
+            # Fetch the student by the primary key (student_id)
+            student = get_object_or_404(Student, student_id=pk)
+            student.delete()
+            return JsonResponse({'status': 'success', 'message': 'Student deleted successfully'}, status=200)
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'}, status=405)
+
 
 #List the list of student 
 def listStudents(request):
@@ -106,9 +111,24 @@ def ListInstructor(request):
 #GET instructors list based on cousses
 def InstructorCourseList(request, pk):
     if request.method == "GET":
-        instructor_instance = Instructor.objects.filter(instructor_department_id=pk).values("instructor_first_name", "instructor_last_name", "instructor_department")
-        return JsonResponse(list(instructor_instance), safe=False)        
+        try:
+            # Get the instructor based on the primary key (pk)
+            instructor = Instructor.objects.get(pk=pk)
 
+            instructor_info = {
+                "instructor_name": f"{instructor.instructor_first_name} {instructor.instructor_last_name}",
+                "department": instructor.instructor_department.get_department_name_display(),
+                "courses": [course.course_name for course in instructor.courses.all()]  
+            }
+
+            # Return the instructor data as JSON
+            return JsonResponse(instructor_info, safe=False)
+
+        except Instructor.DoesNotExist:
+            return JsonResponse({'status': '404', 'message': 'Instructor not found'}, status=404)
+
+    else:
+        return JsonResponse({'status': '400', 'message': 'Invalid request method'}, status=400)
 #form handler for instructor 
 @csrf_protect
 def instructor_form_list(request):

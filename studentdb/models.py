@@ -33,7 +33,7 @@ class Student(models.Model):
     state = models.CharField(max_length=200)
     date_of_birth = models.DateField( )
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
-    student_department = models.ForeignKey(Department, on_delete=models.CASCADE, related_name='students')
+    student_department = models.ForeignKey(Department, on_delete=models.DO_NOTHING, related_name='students')
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
@@ -45,10 +45,10 @@ class Instructor(models.Model):
     instructor_last_name = models.CharField(max_length=200)
     instructor_email = models.EmailField(max_length=200, unique=True)
     instructor_phone = models.CharField(max_length=200)
-    instructor_department = models.ForeignKey(Department, on_delete=models.CASCADE, related_name='instructors')
+    instructor_department = models.ForeignKey(Department, on_delete=models.DO_NOTHING, related_name='instructors')
 
     def __str__(self):
-        return f'{self.instructor_first_name} {self.instructor_last_name}'
+        return f'{self.instructor_first_name} {self.instructor_last_name} '
 
 
 class Course(models.Model):
@@ -57,7 +57,7 @@ class Course(models.Model):
     course_name = models.CharField(max_length=200)
     course_description = models.CharField(max_length=500)
     course_credit = models.IntegerField()
-    department = models.ForeignKey(Department, on_delete=models.CASCADE, related_name='courses')
+    department = models.ForeignKey(Department, on_delete=models.DO_NOTHING, related_name='courses')
     instructors = models.ManyToManyField(Instructor, related_name='courses')
 
     def __str__(self):
